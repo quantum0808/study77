@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <style>
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="pendulumCanvas" width="500" height="500"></canvas>
+    <script>
+      // Constants
+      var canvas = document.getElementById("pendulumCanvas");
+      var ctx = canvas.getContext("2d");
+      var gravity = 9.8; // m/s^2
+      var length = 200; // Length of the pendulum in pixels
+      var angle = Math.PI / 4; // Initial angle of the pendulum in radians
+      var angleVelocity = 0; // Initial angular velocity in radians/s
+      var timeStep = 0.01; // Time step in seconds
+      var friction = 0.999; // Friction coefficient
+
+      // Variables
+      var x = canvas.width / 2 + length * Math.sin(angle);
+      var y = canvas.height / 2 + length * Math.cos(angle);
+
+      // Draw the pendulum
+      function drawPendulum() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, canvas.height / 2);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(x, y, 20, 0, 2 * Math.PI);
+        ctx.fill();
+      }
+
+      // Update the pendulum position
+      function updatePendulum() {
+        angleAcceleration = -gravity / length * Math.sin(angle);
+        angleVelocity += angleAcceleration * timeStep;
+        angle += angleVelocity * timeStep;
+        x = canvas.width / 2 + length * Math.sin(angle);
+        y = canvas.height / 2 + length * Math.cos(angle);
+        angleVelocity *= friction;
+      }
+
+      // Animate the pendulum
+      function animatePendulum() {
+        updatePendulum();
+        drawPendulum();
+        requestAnimationFrame(animatePendulum);
+      }
+
+      // Start the animation
+      animatePendulum();
+    </script>
+  </body>
+</html>
