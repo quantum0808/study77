@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="500" height="500"></canvas>
+  <br>
+  Angle: <input type="text" id="angle">
+  <br>
+  Mass: <input type="text" id="mass">
+  <br>
+  Velocity: <input type="text" id="velocity">
+  <br>
+  <button id="shootBtn">Shoot</button>
+  
+  <script>
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    
+    var ball = {
+      x: 50,
+      y: canvas.height - 50,
+      radius: 20,
+      color: "red"
+    };
+    
+    var ground = {
+      y: canvas.height - 50,
+      height: 50,
+      color: "green"
+    };
+    
+    var basket = {
+      x: canvas.width - 100,
+      y: canvas.height - 100,
+      width: 100,
+      height: 100,
+      color: "yellow"
+    };
+    
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    
+    function drawBall() {
+      ctx.fillStyle = ball.color;
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+    
+    function drawGround() {
+      ctx.fillStyle = ground.color;
+      ctx.fillRect(0, ground.y, canvas.width, ground.height);
+    }
+    
+    function drawBasket() {
+      ctx.fillStyle = basket.color;
+      ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
+    }
+    
+    document.getElementById("shootBtn").addEventListener("click", function() {
+      var angle = parseFloat(document.getElementById("angle").value);
+      var mass = parseFloat(document.getElementById("mass").value);
+      var velocity = parseFloat(document.getElementById("velocity").value);
+      
+      var radians = angle * Math.PI / 180;
+      var vx = velocity * Math.cos(radians);
+      var vy = velocity * Math.sin(radians);
+      var ay = -9.8;
+      var deltaTime = 0.1;
+      var time = 0;
+      
+      clearCanvas();
+      drawGround();
+      drawBasket();
+      drawBall();
+      
+      var timer = setInterval(function() {
+        time += deltaTime;
+        ball.x = 50 + vx * time;
+        ball.y = canvas.height - 50 + vy * time + 0.5 * ay * time * time;
+        vy += ay * time;
+        
+               clearCanvas();
+        drawGround();
+        drawBasket();
+        drawBall();
+        
+        if (ball.y >= canvas.height - ball.radius) {
+          clearInterval(timer);
+        }
+      }, deltaTime * 1000);
+    });
+  </script>
+</body>
+</html>
+
