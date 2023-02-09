@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="myCanvas" width="600" height="400"></canvas>
+  <br>
+  <p>Angle (in degrees): <input type="number" id="angle" value="45"></p>
+  <p>Mass (in kg): <input type="number" id="mass" value="0.5"></p>
+  <p>Velocity (in m/s): <input type="number" id="velocity" value="10"></p>
+  <button onclick="simulate()">Shoot</button>
+  <script>
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    var ball = {
+      x: 50,
+      y: canvas.height - 50,
+      radius: 10,
+      color: "red"
+    };
+    var basket = {
+      x: canvas.width - 50,
+      y: canvas.height - 60,
+      width: 40,
+      height: 80,
+      color: "blue"
+    };
+    var ground = {
+      y: canvas.height - 10,
+      height: 10,
+      color: "green"
+    };
+    
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI);
+      ctx.fillStyle = ball.color;
+      ctx.fill();
+      ctx.closePath();
+    }
+    
+    function drawBasket() {
+      ctx.beginPath();
+      ctx.rect(basket.x, basket.y, basket.width, basket.height);
+      ctx.fillStyle = basket.color;
+      ctx.fill();
+      ctx.closePath();
+    }
+    
+    function drawGround() {
+      ctx.beginPath();
+      ctx.rect(0, ground.y, canvas.width, ground.height);
+      ctx.fillStyle = ground.color;
+      ctx.fill();
+      ctx.closePath();
+    }
+    
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    
+    function simulate() {
+      clearCanvas();
+      drawGround();
+      drawBasket();
+      
+      var angle = parseFloat(document.getElementById("angle").value);
+      var mass = parseFloat(document.getElementById("mass").value);
+      var velocity = parseFloat(document.getElementById("velocity").value);
+      
+      var vx = velocity * Math.cos(angle * Math.PI / 180);
+      var vy = velocity * Math.sin(angle * Math.PI / 180);
+      var ax = 0;
+      var ay = -9.8;
+      var time = 0;
+      var deltaTime = 0.01;
+      
+      
+      var timer = setInterval(function() {
+        time += deltaTime;
+        ball.x = 50 + vx * time;
+        ball.y = canvas.height - 50 + vy * time + 0.5 * ay * time * time;
+        vy += ay * time;
+        
+        if (ball.y >= canvas.height - 50) {
+          clearInterval(timer);
+        }
+        
+        clearCanvas();
+        drawGround();
+        drawBasket();
+        drawBall();
+      }, deltaTime * 1000);
+    }
+  </script>
+</body>
+</html>
