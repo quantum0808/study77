@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Monkey Hunter Demo</title>
+	<style>
+		#canvas {
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="600" height="400"></canvas>
+	<br>
+	<button id="startButton">Start</button>
+	<script>
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+		var startButton = document.getElementById("startButton");
+
+		var monkey = {
+			x: 100,
+			y: 100,
+			width: 50,
+			height: 50
+		};
+
+		var projectile = {
+			x: 0,
+			y: 0,
+			width: 10,
+			height: 10
+		};
+
+		var g = 9.8; // acceleration due to gravity in m/s^2
+		var v = 0; // velocity of monkey in m/s
+		var t = 0; // time in seconds
+		var h = monkey.y; // height of monkey in meters
+
+		function drawMonkey() {
+			var monkeyImage = new Image();
+			monkeyImage.src = "monkey.png";
+			monkeyImage.onload = function() {
+				ctx.drawImage(monkeyImage, monkey.x, monkey.y, monkey.width, monkey.height);
+			};
+		}
+
+		function drawProjectile() {
+			var projectileImage = new Image();
+			projectileImage.src = "projectile.png";
+			projectileImage.onload = function() {
+				ctx.drawImage(projectileImage, projectile.x, projectile.y, projectile.width, projectile.height);
+			};
+		}
+
+		function updatePosition() {
+			v = g * t;
+			monkey.y = h + v * t / 2;
+			t += 0.05;
+		}
+
+		function simulate() {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			updatePosition();
+			drawMonkey();
+			drawProjectile();
+
+			if (monkey.y + monkey.height < canvas.height) {
+				requestAnimationFrame(simulate);
+			}
+		}
+
+		startButton.addEventListener("click", function() {
+			requestAnimationFrame(simulate);
+		});
+	</script>
+</body>
+</html>
+
